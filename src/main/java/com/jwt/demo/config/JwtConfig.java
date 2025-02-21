@@ -12,10 +12,16 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.jwt.demo.filter.JwtAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class JwtConfig {
+	
+	@Autowired
+	private JwtAuthenticationFilter jwtFilter;
 
 	@Autowired
     private final UserDetailsService userDetailsService;
@@ -46,6 +52,8 @@ public class JwtConfig {
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             );
+        
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
